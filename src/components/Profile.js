@@ -1,22 +1,26 @@
 import React from "react";
-import {Form, Input} from "antd";
+import {Descriptions, message} from "antd";
 
-function Profile() {
+function Profile(props) {
+    function renderProfile() {
+        if (props.userInfo === null || props.userInfo.userID === undefined)
+            message.info("please login first");
+        else return (
+            <Descriptions title="USER INFO">
+                <Descriptions.Item label="Avatar">
+                    <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(props.userInfo.username)}`} alt="Avatar" />
+                </Descriptions.Item>
+                <Descriptions.Item label="Username">{props.userInfo.username}</Descriptions.Item>
+                <Descriptions.Item label="Password">{props.userInfo.password}</Descriptions.Item>
+                <Descriptions.Item label="Email">{props.userInfo.email}</Descriptions.Item>
+                <Descriptions.Item label="Type(1:normal, 2:admin, 3:blocked)">{props.userInfo.type}</Descriptions.Item>
+            </Descriptions>
+        )
+    }
     return (
-        <Form>
-            <Form.Item label="Name">
-                <Input />
-            </Form.Item>
-            <Form.Item label="Email" rules={[{type:"email"}]}>
-                <Input />
-            </Form.Item>
-            <Form.Item label="Avatar">
-                <img src="https://avatars.githubusercontent.com/u/16714790?v=4" alt={"avatar"}/>
-            </Form.Item>
-            <Form.Item label="Notes">
-                <Input/>
-            </Form.Item>
-        </Form>
+        <div>
+            {renderProfile()}
+        </div>
     );
 }
 export default Profile;

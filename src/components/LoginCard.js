@@ -1,64 +1,89 @@
-import React from "react";
-import {Card, Button, Checkbox, Form, Input} from "antd";
-import { Link } from "react-router-dom"
+import React, {useState} from "react";
+import {Card, Button, Form, Input, message} from "antd";
+import {Link, useNavigate} from "react-router-dom"
+import * as constant from "../utilities/constant";
+function LoginCard(props) {
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const handleLogin = () => {
+        if(username==='' || password===''){
+            message.error('用户名或密码不能为空');
+            return;
+        }
 
-function LoginCard() {
+        let request = {
+            "username": username,
+            "password": password
+        };
+
+        fetch(`${constant.BACKEND}/login`, {
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+            },
+            body : JSON.stringify(request)
+        }).then((res) => {
+            if (res.ok) {
+                res.json().then(
+                    (json) => {
+                        console.log(json.detail);
+                        if (json.code === 200) {
+                            if (json.detail.type === 1) {
+                                props.setUserInfo(json.detail);
+                                message.info(json.msg + "(normal user)");
+                                navigate("/");
+                            }
+                            else if (json.detail.type === 2) {
+                                props.setUserInfo(json.detail);
+                                message.info(json.msg + "(admin user)");
+                                navigate("/admin");
+                            }
+                            else
+                                message.info("Blocked User!");
+                        } else message.info(json.msg);
+                    }
+                );
+            } else console.log("Net res error");
+        }).catch((error) => {
+            console.log("parse error" + error);
+        });
+    };
+
+    const cardStyle = {
+        width: 400,
+        margin: 'auto',
+        marginTop: 0,
+        padding: 20,
+        textAlign: 'center',
+    };
     return (
-        <Card
-            title={"Login"}
-            extra={<a href="#">Forget Password?</a>}
-            style={{
-                width: 300,
-            }}
-        >
-            <Form>
-                <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your username!',
-                        },
-                    ]}
+        <div>
+            <Card style={cardStyle} title="欢迎登陆！">
+                <Input
+                    placeholder="用户名"
+                    style={{ marginBottom: 16 }}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <Input.Password
+                    placeholder="密码"
+                    style={{ marginBottom: 16 }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={handleLogin}
                 >
-                    <Input defaultValue={"lfwang"}/>
-                </Form.Item>
-
-                <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your password!',
-                        },
-                    ]}
-                >
-                    <Input.Password defaultValue={"hi"}/>
-                </Form.Item>
-
-                <Form.Item
-                    name="remember"
-                    valuePropName="checked"
-                >
-                    <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
-                <Form.Item
-                    wrapperCol={{
-                        offset: 8,
-                        span: 16,
-                    }}
-                >
-                    <Link to={"/home"}>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Link>
-                </Form.Item>
-            </Form>
-        </Card>
+                    登陆
+                </Button>
+                <Button onClick={() => props.setRegisterFlag(true)}>
+                    注册
+                </Button>
+            </Card>
+        </div>
     );
 }
 export default LoginCard;

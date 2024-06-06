@@ -2,67 +2,66 @@ import React, {useState, useEffect} from 'react';
 import HomeView from "./view/HomeView";
 import LoginView from "./view/LoginView";
 import BookDetailView from "./view/BookDetailView";
-import ProfileView from "./view/ProfileView";
-import CartView from "./view/CartView";
-import OrdersView from "./view/OrdersView";
 import {Routes, Route, BrowserRouter as Router} from "react-router-dom"
-
-const BACKEND = "http://localhost:8080"
+import * as constant from "./utilities/constant";
+import AdminView from "./view/AdminView";
+import OrderedView from "./view/OrderedView";
 
 function App() {
-
-    const [allBooks, setAllBooks] = useState([]);
-    const [bookData, setBookData] = useState([]);
-    const [userInfo, setUserInfo] = useState([]);
-
-    useEffect(
-        () => {
-            fetch(`${BACKEND}/getBooks`, )   // getBooks
-                .then((res) => {
-                    if (res.ok) {
-                        res.json().then(
-                            (json)=> {
-                                console.log(json);
-                                setBookData(Object.values(json));
-                                //setAllBooks(Object.values(json));
-                            }
-                        )
-                    } else {
-                        console.log("Net error");
-                    }
-                })
-                .catch((error)=>{console.log("Parse error" + error)});
-        }, []
-    )
+    const [bookData, setBookData] = useState([]); // List<Book>
+    const [userInfo, setUserInfo] = useState([]); // User
+    const [cartData, setCartData] = useState([]); // List<CartItem>
+    const [orderData, setOrderData] = useState([]); // List<Order>
 
     useEffect(
         () => {
-            fetch(`${BACKEND}/getUserInfo`, )
-                .then((res) => {
+            fetch(`${constant.BACKEND}/getBooks`, {
+                credentials: 'include',
+            }).then((res) => {
                     if (res.ok) {
                         res.json().then(
                             (json) => {
                                 console.log(json);
-                                setUserInfo(Object.values(json));
+                                setBookData(Object.values(json.detail));
                             }
                         )
                     } else {
                         console.log("Net error");
                     }
-                })
-                .catch((error) => {console.log("Parse error" + error)});
+                }).catch((error)=>{console.log("Parse error" + error)});
         }, []
     )
 
     return (
         <Router>
             <Routes>
-                <Route exact path="/" element={<LoginView />} />
-                <Route exact path="/home" element={<HomeView bookData={bookData}/>} />
-                <Route exact path="/cart" element={<CartView />} />
-                <Route exact path="/orders" element={<OrdersView />} />
-                <Route exact path="/profile" element={<ProfileView />} />
-                <Route exact path="/book_details/:id" element={<BookDetailView bookData={bookData}/>} />
+                <Route exact path="/login" element={<LoginView
+                    userInfo={userInfo}
+                    setUserInfo={setUserInfo}/>}
+                />
+                <Route exact path="/" element={<HomeView
+                    bookData={bookData}
+                    userInfo={userInfo}
+                    setUserInfo={setUserInfo}
+                    cartData={cartData}
+                    setCartData={setCartData}
+                    orderData={orderData}
+                    setOrderData={setOrderData}
+                />}/>
+                <Route exact path="/book_details/:id" element={<BookDetailView
+                    userInfo={userInfo}
+                    setUserInfo={setUserInfo}
+                />}/>
+                <Route exact path="/success" element={<OrderedView
+                    userInfo={userInfo}
+                    setUserInfo={setUserInfo}/>}
+                />
+                <Route exact path="/admin" element={<AdminView
+                    userInfo={userInfo}
+                    setUserInfo={setUserInfo}
+                    bookData={bookData}
+                    setBookData={setBookData}
+                />}/>
             </Routes>
         </Router>
     );

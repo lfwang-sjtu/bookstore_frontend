@@ -1,18 +1,19 @@
-import React, {useState} from "react";
-import {Layout, Space} from "antd";
-import LoginCard from "../components/LoginCard";
-import {Content, Footer, Header} from "antd/es/layout/layout";
+import {Button, Layout} from "antd";
 import HeadBar from "../components/HeadBar";
-import RegisterCard from "../components/RegisterCard";
+import React from "react";
+import {Content, Footer, Header} from "antd/es/layout/layout";
 import FootInfo from "../components/FootInfo";
 
-function LoginView(props) {
-    const [registerFlag,setRegisterFlag] =useState(false);
+import picture from '../asset/7971713964595_.pic.jpg'
+import {useNavigate} from "react-router-dom";
+
+function OrderedView(props) {
+    const navigate = useNavigate();
 
     return (
         <Layout>
             <Header>
-                <HeadBar userInfo={props.userInfo}/>
+                <HeadBar userInfo={props.userInfo} setUserInfo={props.setUserInfo}/>
             </Header>
             <Content
                 style={{
@@ -23,10 +24,11 @@ function LoginView(props) {
                     justifyContent:"center"
                 }}
             >
-                {registerFlag ?
-                    (<RegisterCard setRegisterFlag={setRegisterFlag}/>) :
-                    (<LoginCard userInfo={props.userInfo} setUserInfo={props.setUserInfo} setRegisterFlag={setRegisterFlag}/>)
-                }
+                <h1>购买成功！！！！！</h1>
+                <Button onClick={() => navigate("/")}>
+                    返回
+                </Button>
+                <img src={picture}/>
             </Content>
             <Footer
                 style={{
@@ -39,7 +41,6 @@ function LoginView(props) {
                 <FootInfo />
             </Footer>
         </Layout>
-    );
+    )
 }
-
-export default LoginView;
+export default OrderedView;

@@ -1,29 +1,156 @@
-import React from "react";
-import {Layout} from "antd";
+import React, {useState} from "react";
+import {Layout, Menu} from "antd";
 import HeadBar from "../components/HeadBar";
-import SideBar from "../components/SideBar";
-import SearchBar from "../components/SearchBar";
 import BookCarousel from "../components/BookCarousel";
 import BookList from "../components/BookList";
+import {BookOutlined, ShoppingCartOutlined, UnorderedListOutlined, UserOutlined} from "@ant-design/icons";
+import {Footer} from "antd/es/layout/layout";
+import CartTable from "../components/CartTable";
+import OrderTable from "../components/OrderTable";
+import Profile from "../components/Profile";
+import FootInfo from "../components/FootInfo";
+import BookSearchList from "../components/BookSearchList";
+import OrderSearchList from "../components/OrderSearchList";
+import SelfLookup from "../components/SelfLookup";
 
 const { Header, Sider, Content } = Layout;
 
 function HomeView(props) {
+    const [currentMenuItem,  setCurrentMenuItem] = useState('books'); // 初始选中的菜单项，默认为 'books'
+    const handleMenuClick = (e) => {
+        setCurrentMenuItem(e.key);
+    };
+    let content;
+    // 根据当前选中的菜单项，设置不同的内容
+    if (currentMenuItem === 'books') {
+        content =
+            <BookList bookData={props.bookData}/>
+    } else if (currentMenuItem === 'cart') {
+        content =
+            <CartTable
+                bookData={props.bookData}
+                userInfo={props.userInfo}
+                cartData={props.cartData}
+                setCartData={props.setCartData}
+            />
+    } else if (currentMenuItem === 'orders') {
+        content =
+            <OrderTable
+                bookData={props.bookData}
+                userInfo={props.userInfo}
+                orderData={props.orderData}
+                setOrderData={props.setOrderData}
+            />
+    } else if (currentMenuItem === 'profile') {
+        content =
+            <Profile userInfo={props.userInfo} />
+    } else if (currentMenuItem === 'bookSearch') {
+        content =
+            <BookSearchList />
+    } else if (currentMenuItem === 'orderSearch') {
+        content =
+            <OrderSearchList userInfo={props.userInfo} bookData={props.bookData}/>
+    } else if (currentMenuItem === 'selfLookup') {
+        content =
+            <SelfLookup userInfo={props.userInfo}/>
+    }
+
+    const items = [
+        {
+            label: (
+                <a>书籍列表</a>
+            ),
+            key: 'books',
+            icon: <BookOutlined />
+        },
+        {
+            label: (
+                <a>购物车</a>
+            ),
+            key: 'cart',
+            icon: <ShoppingCartOutlined />
+        },
+        {
+            label: (
+                <a>订单</a>
+            ),
+            key: 'orders',
+            icon: <UnorderedListOutlined />
+        },
+        {
+            label: (
+                <a>用户中心</a>
+            ),
+            key: 'profile',
+            icon: <UserOutlined />
+        },
+        {
+            label: (
+                <a>带搜索的书籍列表</a>
+            ),
+            key: 'bookSearch',
+            icon: <UnorderedListOutlined />
+        },
+        {
+            label: (
+                <a>带搜索的订单列表</a>
+            ),
+            key: 'orderSearch',
+            icon: <BookOutlined />
+        },
+        {
+            label: (
+                <a>自我统计</a>
+            ),
+            key: 'selfLookup',
+            icon: <BookOutlined />
+        },
+    ];
     return (
         <Layout>
             <Header style={{color:"white"}}>
-                <HeadBar />
+                <HeadBar userInfo={props.userInfo} setUserInfo={props.setUserInfo}/>
             </Header>
-            <Layout>
-                <Sider theme={"light"} width={"15%"}>
-                    <SideBar />
-                </Sider>
-                <Content>
-                    <SearchBar />
-                    <BookCarousel />
-                    <BookList bookData={props.bookData}/>
-                </Content>
-            </Layout>
+            <Content>
+                <Layout
+                    style={{
+                        padding: '0 0',
+                        background: "azure",
+                    }}
+                >
+                    <Sider
+                        width={250}
+                    >
+                        <Menu
+                            mode="vertical"
+                            style={{
+                                height: '100%',
+                            }}
+                            items={items}
+                            onClick={handleMenuClick}
+                            selectedKeys={[currentMenuItem]}
+                        />
+                    </Sider>
+                    <Content
+                        style={{
+                            padding: '24px 24px',
+                            minHeight: 500,
+                        }}
+                    >
+                        {content}
+                    </Content>
+                </Layout>
+            </Content>
+            <Footer
+                style={{
+                    textAlign: 'center',
+                    position: 'fixed',
+                    bottom: 0,
+                    width: '100%'
+                }}
+            >
+                <FootInfo />
+            </Footer>
         </Layout>
     );
 }

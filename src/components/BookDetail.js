@@ -1,34 +1,90 @@
-import React from 'react';
-import { Descriptions, Button } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Descriptions, Button, message, Form, InputNumber, Layout, Menu} from 'antd';
+import * as constant from "../utilities/constant";
+import HeadBar from "./HeadBar";
+import {Content, Footer, Header} from "antd/es/layout/layout";
+import {BookOutlined, ShoppingCartOutlined, UnorderedListOutlined} from "@ant-design/icons";
+import Sider from "antd/es/layout/Sider";
 
 function BookDetail(props) {
-    console.log(props.info);
+    const [book, setBook] = useState({});
+    useEffect(() => {
+        fetch(`${constant.BACKEND}/getBook?isbn=${props.isbn}`, {
+            credentials: 'include',
+        })
+            .then((res) => {
+                if (res.ok) {
+                    res.json().then((json) => {
+                        if (json.code === 200) {
+                            setBook(json.detail);
+                            console.log(book);
+                        } else {
+                            message.info("Request Error");
+                        }
+                    })
+                }
+            })
+    }, [])
+    console.log(props);
+
+    function addCartItem(values) {
+        if (props.userInfo === null) {
+            message.info("Please login first!");
+            return;
+        }
+        if (values.bookAmount < 1) {
+            message.info("inventory not sufficient!");
+            return;
+        }
+        let request = {
+            "isbn":props.isbn,
+            "userID":props.userInfo.userID,
+            "bookAmount":values.bookAmount
+        };
+        console.log(request);
+        fetch(`${constant.BACKEND}/addCartItem`, {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(request)
+        }).then((res) => {
+            if (res.ok) {
+                res.json().then((json) => {
+                    message.info(json.msg);
+                })
+            }
+        }).catch((error) => {console.log("parse error");})
+    }
+
+
     return (
         <div>
-            <div>
-                <div ><img alt="image" src={props.info.image} style={{width:"350px", height:"350px"}}/></div>
-                <div>
-                    <Descriptions>
-                        <Descriptions.Item label={"书名"} span={3}>{props.info.name}</Descriptions.Item>
-                        <Descriptions.Item label={"作者"} span={3}>{props.info.author}</Descriptions.Item>
-                        <Descriptions.Item label={"分类"} span={3}>{props.info.type}</Descriptions.Item>
-                        <Descriptions.Item label={"定价"} span={3}>¥ {props.info.price}</Descriptions.Item>
-                        <Descriptions.Item label={"状态 "} span={3}>有货 库存 {props.info.inventory}件</Descriptions.Item>
-                        <Descriptions.Item label={"作品简介"} span={3}>{props.info.description}</Descriptions.Item>
-                    </Descriptions>
-                </div>
+            <div style={{ display: 'flex', gap: '16px'}}>
+                <img alt="image" src={book.image} style={{width:"350px", height:"350px"}}/>
+                <Descriptions bordered>
+                    <Descriptions.Item label={"书名"} span={3}>{book.name}</Descriptions.Item>
+                    <Descriptions.Item label={"作者"} span={3}>{book.author}</Descriptions.Item>
+                    <Descriptions.Item label={"分类"} span={3}>{book.type}</Descriptions.Item>
+                    <Descriptions.Item label={"定价"} span={3}>¥ {book.price}</Descriptions.Item>
+                    <Descriptions.Item label={"状态 "} span={3}>有货 库存 {book.inventory}件</Descriptions.Item>
+                    <Descriptions.Item label={"作品简介"} span={3}>{book.description}</Descriptions.Item>
+                </Descriptions>
             </div>
-            <div>
-                <Button size={"large"}>
-                    加入购物车
-                </Button>
-
-                <Button size={"large"}>
-                    立即购买
-                </Button>
-            </div>
+            <Form
+                onFinish={addCartItem}
+            >
+                <Form.Item name="bookAmount">
+                    <InputNumber size="small" min={1} max={book.inventory}/>
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" size={"large"} htmlType="submit">
+                        加入购物车
+                    </Button>
+                </Form.Item>
+            </Form>
         </div>
     )
 }
 export default BookDetail;
-
