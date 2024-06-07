@@ -22,7 +22,8 @@ function LoginCard(props) {
             headers:{
                 'Content-Type': 'application/json',
             },
-            body : JSON.stringify(request)
+            body : JSON.stringify(request),
+            credentials: 'include',
         }).then((res) => {
             if (res.ok) {
                 res.json().then(

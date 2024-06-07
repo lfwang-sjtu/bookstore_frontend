@@ -11,6 +11,7 @@ function BookSearchList() {
 
     function handleSearch() {
         fetch(`${constant.BACKEND}/searchBook?keyword=${searchKeyword}`, {
+            method: 'GET',
             credentials: 'include',
         })
             .then((res) => {

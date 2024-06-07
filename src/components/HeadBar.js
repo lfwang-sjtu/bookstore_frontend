@@ -6,9 +6,17 @@ import * as constants from "../utilities/constant";
 function HeadBar(props) {
     const navigate = useNavigate();
     function handleLogout() {
+        console.log("execute logout!");
+        let request = {
+            "username": props.userInfo.username,
+        };
         fetch(`${constants.BACKEND}/logout`, {
-            method: "GET",
-            credentials: 'include'
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(request)
         })
             .then((res) => {
                 if (res.status === 403) {

@@ -18,26 +18,27 @@ import {useNavigate} from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 function HomeView(props) {
-    const [bookData, setBookData] = useState([]);
     const [currentMenuItem,  setCurrentMenuItem] = useState('books'); // 初始选中的菜单项，默认为 'books'
     const navigate = useNavigate();
-    // fetch(`${constant.BACKEND}/getBooks`, {
-    //     credentials: 'include',
-    // }).then((res) => {
-    //     if (res.status === 403) {
-    //         message.info("Please login first");
-    //     }
-    //     if (res.ok) {
-    //         res.json().then(
-    //             (json) => {
-    //                 console.log(json);
-    //                 setBookData(Object.values(json.detail));
-    //             }
-    //         )
-    //     } else {
-    //         console.log("Net error");
-    //     }
-    // }).catch((error)=>{console.log("Parse error" + error)});
+    const [bookData, setBookData] = useState([]);
+    useEffect(
+        () => {
+            fetch(`${constant.BACKEND}/getBooks`, {
+                credentials: 'include',
+            }).then((res) => {
+                if (res.ok) {
+                    res.json().then(
+                        (json) => {
+                            console.log(json);
+                            setBookData(Object.values(json.detail));
+                        }
+                    )
+                } else {
+                    console.log("Net error");
+                }
+            }).catch((error)=>{console.log("Parse error" + error)});
+        }, []
+    )
     const handleMenuClick = (e) => {
         setCurrentMenuItem(e.key);
     };
@@ -50,7 +51,7 @@ function HomeView(props) {
     } else if (currentMenuItem === 'cart') {
         content =
             <CartTable
-                bookData={props.bookData}
+                bookData={bookData}
                 userInfo={props.userInfo}
                 cartData={props.cartData}
                 setCartData={props.setCartData}
@@ -58,7 +59,7 @@ function HomeView(props) {
     } else if (currentMenuItem === 'orders') {
         content =
             <OrderTable
-                bookData={props.bookData}
+                bookData={bookData}
                 userInfo={props.userInfo}
                 orderData={props.orderData}
                 setOrderData={props.setOrderData}
@@ -71,7 +72,7 @@ function HomeView(props) {
             <BookSearchList />
     } else if (currentMenuItem === 'orderSearch') {
         content =
-            <OrderSearchList userInfo={props.userInfo} bookData={props.bookData}/>
+            <OrderSearchList userInfo={props.userInfo} bookData={bookData}/>
     } else if (currentMenuItem === 'selfLookup') {
         content =
             <SelfLookup userInfo={props.userInfo}/>

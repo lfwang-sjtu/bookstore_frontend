@@ -35,6 +35,7 @@ function OrderSearchList(props) {
                     navigate("/login");
                 }
                 if (res.ok) {
+                    setOrderData([]);
                     res.json().then((json) => {
                         console.log(json.detail);
                         if (json.detail != null) {
@@ -71,8 +72,6 @@ function OrderSearchList(props) {
                 dataSource={orderData}
                 // dataSource={orderData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))}
                 renderItem={item => {
-                    console.log(item);
-                    console.log("see here");
                     return (
                         <OrderCard order={item} bookData={props.bookData}/>
                     );
