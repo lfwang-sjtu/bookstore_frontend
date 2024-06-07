@@ -15,6 +15,10 @@ function CartTable(props) {
             credentials: 'include',
             body: JSON.stringify({"userID": props.userInfo.userID})
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.detail);
@@ -39,6 +43,10 @@ function CartTable(props) {
             credentials: 'include',
             body: JSON.stringify(request)
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.msg);
@@ -63,6 +71,10 @@ function CartTable(props) {
                 credentials: 'include',
                 body: JSON.stringify(request)
             }).then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     navigate("/success");
                 } else message.info("Oops! Network Error!");

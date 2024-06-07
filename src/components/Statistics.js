@@ -86,6 +86,10 @@ function Statistics() {
                 credentials: 'include',
                 body: JSON.stringify(request)
             }).then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     res.json().then((json) => {
                         console.log(json.detail);

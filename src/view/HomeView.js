@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Layout, Menu} from "antd";
+import React, {useEffect, useState} from "react";
+import {Layout, Menu, message} from "antd";
 import HeadBar from "../components/HeadBar";
 import BookCarousel from "../components/BookCarousel";
 import BookList from "../components/BookList";
@@ -12,11 +12,32 @@ import FootInfo from "../components/FootInfo";
 import BookSearchList from "../components/BookSearchList";
 import OrderSearchList from "../components/OrderSearchList";
 import SelfLookup from "../components/SelfLookup";
+import * as constant from "../utilities/constant";
+import {useNavigate} from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
 function HomeView(props) {
+    const [bookData, setBookData] = useState([]);
     const [currentMenuItem,  setCurrentMenuItem] = useState('books'); // 初始选中的菜单项，默认为 'books'
+    const navigate = useNavigate();
+    // fetch(`${constant.BACKEND}/getBooks`, {
+    //     credentials: 'include',
+    // }).then((res) => {
+    //     if (res.status === 403) {
+    //         message.info("Please login first");
+    //     }
+    //     if (res.ok) {
+    //         res.json().then(
+    //             (json) => {
+    //                 console.log(json);
+    //                 setBookData(Object.values(json.detail));
+    //             }
+    //         )
+    //     } else {
+    //         console.log("Net error");
+    //     }
+    // }).catch((error)=>{console.log("Parse error" + error)});
     const handleMenuClick = (e) => {
         setCurrentMenuItem(e.key);
     };
@@ -24,7 +45,8 @@ function HomeView(props) {
     // 根据当前选中的菜单项，设置不同的内容
     if (currentMenuItem === 'books') {
         content =
-            <BookList bookData={props.bookData}/>
+            <BookSearchList />
+            // <BookList bookData={bookData}/>
     } else if (currentMenuItem === 'cart') {
         content =
             <CartTable
@@ -84,13 +106,13 @@ function HomeView(props) {
             key: 'profile',
             icon: <UserOutlined />
         },
-        {
-            label: (
-                <a>带搜索的书籍列表</a>
-            ),
-            key: 'bookSearch',
-            icon: <UnorderedListOutlined />
-        },
+        // {
+        //     label: (
+        //         <a>带搜索的书籍列表</a>
+        //     ),
+        //     key: 'bookSearch',
+        //     icon: <UnorderedListOutlined />
+        // },
         {
             label: (
                 <a>带搜索的订单列表</a>

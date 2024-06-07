@@ -29,6 +29,8 @@ function AdminBookTable(props) {
     const [addPrice, setAddPrice] = useState('');
     const [addDescription, setAddDescription] = useState('');
 
+    const navigate = useNavigate();
+
 
     const filteredBooks = bookData.find(book => book.id === id);
 
@@ -53,6 +55,10 @@ function AdminBookTable(props) {
             credentials: 'include',
             body: JSON.stringify(request)
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.msg);
@@ -68,6 +74,10 @@ function AdminBookTable(props) {
             credentials: 'include',
         })
             .then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.msg);
@@ -98,6 +108,10 @@ function AdminBookTable(props) {
             credentials: 'include',
             body: JSON.stringify(request)
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.msg);
@@ -177,6 +191,10 @@ function AdminBookTable(props) {
             credentials: 'include',
         })
             .then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     res.json().then(
                         (json) => {

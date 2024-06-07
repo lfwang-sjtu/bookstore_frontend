@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {json} from "react-router-dom";
+import {json, useNavigate} from "react-router-dom";
 import * as constant from "../utilities/constant";
 import {Button, List, message, Table} from "antd";
 
 function AdminUserTable(props) {
+    const navigate = useNavigate();
     const [userData, setUserData] = useState([]);
     const data = userData.map((item) => ({ key: item.userID, ...item }));
     const normalUser = userData
@@ -19,6 +20,10 @@ function AdminUserTable(props) {
                 credentials: 'include',
             })
                 .then((res) => {
+                    if (res.status === 403) {
+                        message.info("Please login first");
+                        navigate("/login");
+                    }
                     if (res.ok) {
                         res.json().then(
                             (json) => {
@@ -44,6 +49,10 @@ function AdminUserTable(props) {
             credentials: 'include',
             body: JSON.stringify(request)
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.msg);
@@ -64,6 +73,10 @@ function AdminUserTable(props) {
             credentials: 'include',
             body: JSON.stringify(request)
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     console.log(json.msg);

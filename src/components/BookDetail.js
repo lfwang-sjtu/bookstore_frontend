@@ -5,14 +5,20 @@ import HeadBar from "./HeadBar";
 import {Content, Footer, Header} from "antd/es/layout/layout";
 import {BookOutlined, ShoppingCartOutlined, UnorderedListOutlined} from "@ant-design/icons";
 import Sider from "antd/es/layout/Sider";
+import {useNavigate} from "react-router-dom";
 
 function BookDetail(props) {
     const [book, setBook] = useState({});
+    const navigate = useNavigate();
     useEffect(() => {
         fetch(`${constant.BACKEND}/getBook?isbn=${props.isbn}`, {
             credentials: 'include',
         })
             .then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     res.json().then((json) => {
                         if (json.code === 200) {
@@ -50,6 +56,10 @@ function BookDetail(props) {
             credentials: 'include',
             body: JSON.stringify(request)
         }).then((res) => {
+            if (res.status === 403) {
+                message.info("Please login first");
+                navigate("/login");
+            }
             if (res.ok) {
                 res.json().then((json) => {
                     message.info(json.msg);

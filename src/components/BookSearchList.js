@@ -1,17 +1,23 @@
 import React, {useEffect, useState} from "react";
-import {Input, List} from "antd";
+import {Button, Input, List, message} from "antd";
 import BookCard from "./BookCard";
 import * as constant from "../utilities/constant";
+import {useNavigate} from "react-router-dom";
 function BookSearchList() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [bookData, setBookData] = useState([]);
 
-    useEffect(() => {
-        // 发送请求到后端接口
+    const navigate = useNavigate();
+
+    function handleSearch() {
         fetch(`${constant.BACKEND}/searchBook?keyword=${searchKeyword}`, {
             credentials: 'include',
         })
             .then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     res.json().then(
                         (json) => {
@@ -23,7 +29,7 @@ function BookSearchList() {
             .catch(error => {
                 console.error('Error fetching book list:', error);
             });
-    }, [searchKeyword]);
+    }
 
     return (
         <div>
@@ -33,6 +39,7 @@ function BookSearchList() {
                 onChange={e => setSearchKeyword(e.target.value)}
                 style={{ marginBottom: '16px' }}
             />
+            <Button type="primary" onClick={handleSearch}>搜索！</Button>
 
             <List
                 dataSource={bookData}

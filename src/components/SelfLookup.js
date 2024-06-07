@@ -1,12 +1,15 @@
-import {Button, DatePicker, Table} from "antd";
+import {Button, DatePicker, message, Table} from "antd";
 import Title from "antd/es/typography/Title";
 import React, {useState} from "react";
 import * as constant from "../utilities/constant";
+import {useNavigate} from "react-router-dom";
 
 function SelfLookup(props) {
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
     const [selfLookup, setSelfLookup] = useState(null);
+
+    const navigate = useNavigate();
 
     let sortedBook = [];
     if (selfLookup !== null) {
@@ -46,6 +49,10 @@ function SelfLookup(props) {
                 credentials: 'include',
                 body: JSON.stringify(request)
             }).then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     res.json().then((json) => {
                         console.log(json.detail);

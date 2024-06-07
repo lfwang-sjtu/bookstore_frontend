@@ -2,12 +2,15 @@ import {Button, DatePicker, Input, List, message} from "antd";
 import OrderCard from "./OrderCard";
 import React, {useState} from "react";
 import * as constant from "../utilities/constant";
+import {useNavigate} from "react-router-dom";
 
 function OrderSearchList(props) {
     const [keyword, setKeyword] = useState('');
     const [orderData, setOrderData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+
+    const navigate = useNavigate();
 
     const handleSearch = () => {
         if (props.userInfo === null || props.userInfo.userID === undefined)
@@ -27,6 +30,10 @@ function OrderSearchList(props) {
                 credentials: 'include',
                 body: JSON.stringify(request)
             }).then((res) => {
+                if (res.status === 403) {
+                    message.info("Please login first");
+                    navigate("/login");
+                }
                 if (res.ok) {
                     res.json().then((json) => {
                         console.log(json.detail);
