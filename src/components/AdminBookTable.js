@@ -1,5 +1,5 @@
 import Title from "antd/es/typography/Title";
-import {Button, Form, Input, List, message, Modal, Table} from "antd";
+import {Button, Form, Input, Image, message, Modal, Table} from "antd";
 import {json, useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import * as constant from "../utilities/constant";
@@ -34,7 +34,7 @@ function AdminBookTable(props) {
 
     const filteredBooks = bookData.find(book => book.id === id);
 
-    const handleFormSubmit = () => {
+    function handleFormSubmit() {
         const request = {
             "id": id,
             "name": editName,
@@ -69,7 +69,7 @@ function AdminBookTable(props) {
         setModalVisible(false);
     };
 
-    const handleDelete = () => {
+    function handleDelete() {
         fetch(`${constant.BACKEND}/deleteBook?id=${id}`,{
             credentials: 'include',
         })
@@ -88,7 +88,8 @@ function AdminBookTable(props) {
         setModalVisible(false);
     }
 
-    const handleAdd = () => {
+    function handleAdd() {
+        console.log("execute handle add once");
         const request = {
             "name": addName,
             "author": addAuthor,
@@ -169,6 +170,16 @@ function AdminBookTable(props) {
             title: '价格',
             dataIndex: 'price',
             key: 'price',
+        },
+        {
+            title: '图片',
+            dataIndex: 'image',
+            key: 'image',
+            render: (text, record) => (
+                <div>
+                    <Image src={record.image} style={{width:'10%', height: '10%'}}/>
+                </div>
+            )
         },
         {
             title: '编辑',
@@ -282,11 +293,12 @@ function AdminBookTable(props) {
                 placeholder="输入关键词搜索书籍"
                 value={searchKeyword}
                 onChange={e => setSearchKeyword(e.target.value)}
-                style={{ marginBottom: '16px' }}
+                style={{marginBottom: '16px'}}
             />
             <Button type="primary" onClick={handleSearch}>搜索</Button>
             <Button type="primary" onClick={openAdd}>新增图书</Button>
             <Table columns={columns} dataSource={bookData} pagination={false}/>
+            <h1>这是一个彩蛋</h1>
             <Modal
                 title={"编辑书籍信息"}
                 visible={modalVisible}
@@ -300,62 +312,61 @@ function AdminBookTable(props) {
                 </div>
                 <Form
                     name="editBookForm"
-                    onFinish={handleFormSubmit}
                 >
                     {/* 表单字段 */}
                     <Form.Item
                         label="书名"
                         name="name"
-                        rules={[{ required: true, message: '请输入书名' }]}
+                        rules={[{required: true, message: '请输入书名'}]}
                     >
-                        <Input value={editName} onChange={handleNameChange} />
+                        <Input value={editName} onChange={handleNameChange}/>
                     </Form.Item>
                     <Form.Item
                         label="作者"
                         name="author"
-                        rules={[{ required: true, message: '请输入作者' }]}
+                        rules={[{required: true, message: '请输入作者'}]}
                     >
                         <Input value={editAuthor} onChange={handleAuthorChange}/>
                     </Form.Item>
                     <Form.Item
                         label="ISBN"
                         name="isbn"
-                        rules={[{ required: true, message: '请输入ISBN' }]}
+                        rules={[{required: true, message: '请输入ISBN'}]}
                     >
                         <Input value={editIsbn} onChange={handleIsbnChange}/>
                     </Form.Item>
                     <Form.Item
                         label="封面"
                         name="image"
-                        rules={[{ required: true, message: '请输入封面地址' }]}
+                        rules={[{required: true, message: '请输入封面地址'}]}
                     >
                         <Input value={editImage} onChange={handleImageChange}/>
                     </Form.Item>
                     <Form.Item
                         label="库存量"
                         name="inventory"
-                        rules={[{ required: true, message: '请输入库存量' }]}
+                        rules={[{required: true, message: '请输入库存量'}]}
                     >
                         <Input value={editInventory} onChange={handleInventoryChange}/>
                     </Form.Item>
                     <Form.Item
                         label="类型"
                         name="type"
-                        rules={[{ required: true, message: '请输入类型' }]}
+                        rules={[{required: true, message: '请输入类型'}]}
                     >
                         <Input value={editType} onChange={handleTypeChange}/>
                     </Form.Item>
                     <Form.Item
                         label="价格"
                         name="price"
-                        rules={[{ required: true, message: '请输入价格' }]}
+                        rules={[{required: true, message: '请输入价格'}]}
                     >
                         <Input value={editPrice} onChange={handlePriceChange}/>
                     </Form.Item>
                     <Form.Item
                         label="描述"
                         name="description"
-                        rules={[{ required: true, message: '请输入书籍描述' }]}
+                        rules={[{required: true, message: '请输入书籍描述'}]}
                     >
                         <Input value={editDescription} onChange={handleDescriptionChange}/>
                     </Form.Item>
@@ -386,61 +397,60 @@ function AdminBookTable(props) {
             >
                 <Form
                     name="addBookForm"
-                    onFinish={handleAdd}
                 >
                     <Form.Item
                         label="书名"
                         name="name"
-                        rules={[{ required: true, message: '请输入书名' }]}
+                        rules={[{required: true, message: '请输入书名'}]}
                     >
-                        <Input value={addName} onChange={handleNameAdd} />
+                        <Input value={addName} onChange={handleNameAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="作者"
                         name="author"
-                        rules={[{ required: true, message: '请输入作者' }]}
+                        rules={[{required: true, message: '请输入作者'}]}
                     >
                         <Input value={addAuthor} onChange={handleAuthorAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="ISBN"
                         name="isbn"
-                        rules={[{ required: true, message: '请输入ISBN' }]}
+                        rules={[{required: true, message: '请输入ISBN'}]}
                     >
                         <Input value={addIsbn} onChange={handleIsbnAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="封面"
                         name="image"
-                        rules={[{ required: true, message: '请输入封面地址' }]}
+                        rules={[{required: true, message: '请输入封面地址'}]}
                     >
                         <Input value={addImage} onChange={handleImageAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="库存量"
                         name="inventory"
-                        rules={[{ required: true, message: '请输入库存量' }]}
+                        rules={[{required: true, message: '请输入库存量'}]}
                     >
                         <Input value={addInventory} onChange={handleInventoryAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="类型"
                         name="type"
-                        rules={[{ required: true, message: '请输入类型' }]}
+                        rules={[{required: true, message: '请输入类型'}]}
                     >
                         <Input value={addType} onChange={handleTypeAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="价格"
                         name="price"
-                        rules={[{ required: true, message: '请输入价格' }]}
+                        rules={[{required: true, message: '请输入价格'}]}
                     >
                         <Input value={addPrice} onChange={handlePriceAdd}/>
                     </Form.Item>
                     <Form.Item
                         label="描述"
                         name="description"
-                        rules={[{ required: true, message: '请输入书籍描述' }]}
+                        rules={[{required: true, message: '请输入书籍描述'}]}
                     >
                         <Input value={addDescription} onChange={handleDescriptionAdd}/>
                     </Form.Item>
@@ -459,4 +469,5 @@ function AdminBookTable(props) {
         </div>
     )
 }
+
 export default AdminBookTable;

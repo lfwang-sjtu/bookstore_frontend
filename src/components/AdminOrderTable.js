@@ -14,6 +14,27 @@ function AdminOrderTable(props) {
 
     const navigate = useNavigate();
 
+    const [bookData, setBookData] = useState([]); // List<Book>
+
+    useEffect(
+        () => {
+            fetch(`${constant.BACKEND}/getBooks`, {
+                credentials: 'include',
+            }).then((res) => {
+                if (res.ok) {
+                    res.json().then(
+                        (json) => {
+                            console.log(json);
+                            setBookData(Object.values(json.detail));
+                        }
+                    )
+                } else {
+                    console.log("Net error");
+                }
+            }).catch((error)=>{console.log("Parse error" + error)});
+        }, []
+    )
+
     const handleSearch = () => {
         if (props.userInfo === null || props.userInfo.userID === undefined)
             message.info("please login first");
@@ -91,7 +112,7 @@ function AdminOrderTable(props) {
                 renderItem={item => {
                     console.log(item);
                     return (
-                        <OrderCard order={item} bookData={props.bookData}/>
+                        <OrderCard order={item} bookData={bookData}/>
                     );
                 }}
             ></List>
