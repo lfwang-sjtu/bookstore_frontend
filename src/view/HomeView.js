@@ -14,6 +14,7 @@ import OrderSearchList from "../components/OrderSearchList";
 import SelfLookup from "../components/SelfLookup";
 import * as constant from "../utilities/constant";
 import {useNavigate} from "react-router-dom";
+import BookSearchPageList from "../components/BookSearchPageList";
 
 const { Header, Sider, Content } = Layout;
 
@@ -48,6 +49,9 @@ function HomeView(props) {
         content =
             <BookSearchList />
             // <BookList bookData={bookData}/>
+    } else if (currentMenuItem === 'books_with_page') {
+        content =
+            <BookSearchPageList />
     } else if (currentMenuItem === 'cart') {
         content =
             <CartTable
@@ -84,6 +88,13 @@ function HomeView(props) {
                 <a>书籍列表</a>
             ),
             key: 'books',
+            icon: <BookOutlined />
+        },
+        {
+            label: (
+                <a>分页查询的书籍列表</a>
+            ),
+            key: 'books_with_page',
             icon: <BookOutlined />
         },
         {

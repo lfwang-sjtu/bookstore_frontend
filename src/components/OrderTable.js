@@ -21,6 +21,7 @@ function OrderTable(props) {
             }
             if (res.ok) {
                 res.json().then((json) => {
+                    console.log("here are the orders!")
                     console.log(json.detail);
                     if (json.detail != null) {
                         props.setOrderData(Object.values(json.detail));

@@ -38,7 +38,7 @@ function OrderCard(props) {
 
     return (
         <Card
-            title={"订单ID:" + props.order.orderID + ", 下单日期" + formattedDate}
+            title={"订单ID:" + props.order.orderID + ", 下单日期" + formattedDate + "总收费" + props.order.total + "¥"}
         >
             <Table columns={columns} dataSource={data} pagination={false}/>
         </Card>
