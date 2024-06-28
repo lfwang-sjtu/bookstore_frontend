@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, DatePicker, message, Table} from "antd";
 import * as constant from "../utilities/constant";
 import {useNavigate} from "react-router-dom";
+import ReactECharts from 'echarts-for-react';
 
 function Statistics() {
     const [startDate, setStartDate] = useState(null);
@@ -29,6 +30,35 @@ function Statistics() {
         },
     ];
 
+    const option = {
+        title: {
+            text: '书籍类别与销量',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left'
+        },
+        series: [
+            {
+                name: '销量',
+                type: 'pie',
+                radius: '50%',
+                data: sortedData.map(item => ({ value: item.number, name: item.type })),
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+
     const columnsUser = [
         {
             title: '用户名',
@@ -41,6 +71,40 @@ function Statistics() {
             key: 'total',
         },
     ];
+
+    const option1 = {
+        title: {
+            text: '用户消费额',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        xAxis: {
+            type: 'category',
+            data: sortedUserData.map(item => item.username),
+            axisLabel: {
+                rotate: 45,
+                interval: 0
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '消费额',
+                type: 'bar',
+                data: sortedUserData.map(item => item.total),
+                itemStyle: {
+                    color: '#5470C6'
+                }
+            }
+        ]
+    };
 
     function handleSearch() {
         if (startDate && endDate) {
@@ -123,6 +187,8 @@ function Statistics() {
                 dataSource={sortedData}
                 pagination={false} // 可以根据需要设置是否显示分页器
             />
+            <ReactECharts option={option} />
+
             <h1>用户消费统计</h1>
             <DatePicker
                 placeholder="选择开始日期"
@@ -140,8 +206,9 @@ function Statistics() {
             <Table
                 columns={columnsUser}
                 dataSource={sortedUserData}
-                pagination={false} // 可以根据需要设置是否显示分页器
+                pagination={false}
             />
+            <ReactECharts option={option1} />
         </div>
     )
 }
