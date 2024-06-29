@@ -9,10 +9,12 @@ function OrderSearchList(props) {
     const [orderData, setOrderData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [pageIndex, setPageIndex] = useState(0);
+    const pageSize = 3;
 
     const navigate = useNavigate();
 
-    const handleSearch = () => {
+    function handleSubmit() {
         if (props.userInfo === null || props.userInfo.userID === undefined)
             message.info("please login first");
         if (startDate && endDate) {
@@ -20,9 +22,11 @@ function OrderSearchList(props) {
                 "userID": props.userInfo.userID,
                 "keyword": keyword,
                 "start": startDate.toISOString(),
-                "end": endDate.toISOString()
+                "end": endDate.toISOString(),
+                "pageIndex": pageIndex,
+                "pageSize": pageSize
             };
-            fetch(`${constant.BACKEND}/searchOrders`, {
+            fetch(`${constant.BACKEND}/searchOrdersWithPage`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
@@ -37,15 +41,28 @@ function OrderSearchList(props) {
                 if (res.ok) {
                     setOrderData([]);
                     res.json().then((json) => {
-                        console.log(json.detail);
                         if (json.detail != null) {
+                            console.log(pageIndex);
                             setOrderData((Object.values(json.detail)));
+                        } else {
+                            message.info("已经没啦，返回第一页～");
+                            setPageIndex(-1);
                         }
                     })
                 } else console.log("Net error");
             }).catch((error) => {console.log(error);});
         }
     };
+
+    function handleNextPage() {
+        setPageIndex(prevPageIndex => prevPageIndex + 1);
+        handleSubmit();
+    }
+
+    function handleSearch() {
+        setPageIndex(0);
+        handleSubmit();
+    }
 
     return (
         <div>
@@ -68,6 +85,7 @@ function OrderSearchList(props) {
                 onChange={date => setEndDate(date)}
             />
             <Button type="primary" onClick={handleSearch}>搜索</Button>
+            <Button type="default" onClick={handleNextPage}>下一页</Button>
             <List
                 dataSource={orderData}
                 // dataSource={orderData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))}
@@ -77,6 +95,7 @@ function OrderSearchList(props) {
                     );
                 }}
             ></List>
+            <h1>彩蛋～</h1>
         </div>
     );
 }

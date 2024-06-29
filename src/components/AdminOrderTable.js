@@ -11,6 +11,8 @@ function AdminOrderTable(props) {
     const [orderData, setOrderData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [pageIndex, setPageIndex] = useState(0);
+    const pageSize = 3;
 
     const navigate = useNavigate();
 
@@ -35,7 +37,7 @@ function AdminOrderTable(props) {
         }, []
     )
 
-    const handleSearch = () => {
+    function handleSubmit() {
         if (props.userInfo === null || props.userInfo.userID === undefined)
             message.info("please login first");
         if (startDate && endDate) {
@@ -43,9 +45,11 @@ function AdminOrderTable(props) {
                 "userID": props.userInfo.userID,
                 "keyword": keyword,
                 "start": startDate.toISOString(),
-                "end": endDate.toISOString()
+                "end": endDate.toISOString(),
+                "pageIndex": pageIndex,
+                "pageSize": pageSize
             };
-            fetch(`${constant.BACKEND}/searchAllOrders`, {
+            fetch(`${constant.BACKEND}/searchAllOrdersWithPage`, {
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
@@ -59,15 +63,29 @@ function AdminOrderTable(props) {
                 }
                 if (res.ok) {
                     res.json().then((json) => {
+                        console.log("Get Page result!");
                         console.log(json.detail);
                         if (json.detail != null) {
                             setOrderData((Object.values(json.detail)));
+                        } else {
+                            message.info("哎呀到底啦，再点就回到第一页了");
+                            setPageIndex(-1);
                         }
                     })
                 } else console.log("Net error");
             }).catch((error) => {console.log(error);});
         }
-    };
+    }
+
+    function handleSearch() {
+        setPageIndex(0);
+        handleSubmit();
+    }
+
+    function handleNextPage() {
+        setPageIndex(prevState => prevState + 1);
+        handleSubmit();
+    }
 
     // useEffect(
     //     () => {
@@ -107,6 +125,7 @@ function AdminOrderTable(props) {
                 onChange={date => setEndDate(date)}
             />
             <Button type="primary" onClick={handleSearch}>搜索</Button>
+            <Button type="default" onClick={handleNextPage}>下一页</Button>
             <List
                 dataSource={orderData}
                 renderItem={item => {
@@ -116,6 +135,7 @@ function AdminOrderTable(props) {
                     );
                 }}
             ></List>
+            <h1>这是一个彩蛋</h1>
         </div>
     );
 }
