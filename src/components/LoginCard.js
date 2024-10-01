@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Card, Button, Form, Input, message} from "antd";
 import {Link, useNavigate} from "react-router-dom"
 import * as constant from "../utilities/constant";
+import {openSocket} from "../service/WebSocketService";
 function LoginCard(props) {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -34,6 +35,7 @@ function LoginCard(props) {
                                 props.setUserInfo(json.detail);
                                 message.info(json.msg + "(normal user)");
                                 navigate("/");
+                                openSocket(json.detail.userID);
                             }
                             else if (json.detail.type === 2) {
                                 props.setUserInfo(json.detail);

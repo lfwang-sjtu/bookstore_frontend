@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Col, message, Row} from "antd";
 import {json, Link, useNavigate} from "react-router-dom";
 import * as constants from "../utilities/constant";
+import {closeSocket} from "../service/WebSocketService";
 
 function HeadBar(props) {
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ function HeadBar(props) {
                     navigate("/login");
                 }
                 if (res.ok) {
+                    closeSocket();
                     res.json().then(
                         (json) => {
                             console.log(json);

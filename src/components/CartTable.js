@@ -63,7 +63,7 @@ function CartTable(props) {
             message.error("userID is " + props.userInfo.userID);
         } else {
             // todo
-            fetch(`${constant.BACKEND}/makeOrder`,{
+            fetch(`${constant.BACKEND}/sendOrder`,{
                 method: 'POST',
                 headers:{
                     'Content-Type':'application/json'
