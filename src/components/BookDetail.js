@@ -11,7 +11,8 @@ function BookDetail(props) {
     const [book, setBook] = useState({});
     const navigate = useNavigate();
     useEffect(() => {
-        fetch(`${constant.BACKEND}/getBook?isbn=${props.isbn}`, {
+        console.log("get book with id=" + props.id);
+        fetch(`${constant.BACKEND}/getBook?id=${props.id}`, {
             credentials: 'include',
         })
             .then((res) => {

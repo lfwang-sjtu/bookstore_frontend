@@ -50,7 +50,7 @@ function BookDetailView(props) {
                             padding: '24px 24px',
                         }}
                     >
-                        <BookDetail isbn={useParams().id} userInfo={props.userInfo}/>
+                        <BookDetail id={useParams().id} userInfo={props.userInfo}/>
                     </Content>
                 </Layout>
             </Content>
