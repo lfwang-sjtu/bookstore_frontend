@@ -43,19 +43,8 @@ function BookDetail(props) {
             message.info("inventory not sufficient!");
             return;
         }
-        let request = {
-            "isbn":props.isbn,
-            "userID":props.userInfo.userID,
-            "bookAmount":values.bookAmount
-        };
-        console.log(request);
-        fetch(`${constant.BACKEND}/addCartItem`, {
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify(request)
+        fetch(`${constant.BACKEND}/addCartItem?isbn=${book.isbn}&userID=${props.userInfo.userID}&bookAmount=${values.bookAmount}`, {
+            method:'GET',
         }).then((res) => {
             if (res.status === 403) {
                 message.info("Please login first");

@@ -8,13 +8,8 @@ import * as constant from "../utilities/constant";
 function OrderTable(props) {
     const navigate = useNavigate();
     useEffect(() => {
-        fetch(`${constants.BACKEND}/getOrders`, {
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({"userID": props.userInfo.userID})
+        fetch(`${constants.BACKEND}/getOrders?userID=${props.userInfo.userID}`, {
+            method:'GET',
         }).then((res) => {
             if (res.status === 403) {
                 message.info("Please login first");

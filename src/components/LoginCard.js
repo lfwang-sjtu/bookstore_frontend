@@ -18,13 +18,8 @@ function LoginCard(props) {
             "password": password
         };
 
-        fetch(`${constant.BACKEND}/login`, {
-            method: "POST",
-            headers:{
-                'Content-Type': 'application/json',
-            },
-            body : JSON.stringify(request),
-            credentials: 'include',
+        fetch(`${constant.BACKEND}/loginForDamnEureka?username=${username}&password=${password}`, {
+            method: "GET",
         }).then((res) => {
             if (res.ok) {
                 res.json().then(
@@ -51,6 +46,40 @@ function LoginCard(props) {
         }).catch((error) => {
             console.log("parse error" + error);
         });
+
+        // fetch(`${constant.BACKEND}/login`, {
+        //     method: "POST",
+        //     headers:{
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body : JSON.stringify(request),
+        //     credentials: 'include',
+        // }).then((res) => {
+        //     if (res.ok) {
+        //         res.json().then(
+        //             (json) => {
+        //                 console.log(json.detail);
+        //                 if (json.code === 200) {
+        //                     if (json.detail.type === 1) {
+        //                         props.setUserInfo(json.detail);
+        //                         message.info(json.msg + "(normal user)");
+        //                         navigate("/");
+        //                         openSocket(json.detail.userID);
+        //                     }
+        //                     else if (json.detail.type === 2) {
+        //                         props.setUserInfo(json.detail);
+        //                         message.info(json.msg + "(admin user)");
+        //                         navigate("/admin");
+        //                     }
+        //                     else
+        //                         message.info("Blocked User!");
+        //                 } else message.info(json.msg);
+        //             }
+        //         );
+        //     } else console.log("Net res error");
+        // }).catch((error) => {
+        //     console.log("parse error" + error);
+        // });
     };
 
     const cardStyle = {

@@ -7,13 +7,8 @@ import {useNavigate} from "react-router-dom";
 function CartTable(props) {
     const navigate = useNavigate();
     useEffect(() => {
-        fetch(`${constant.BACKEND}/getCartItems`, {
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({"userID": props.userInfo.userID})
+        fetch(`${constant.BACKEND}/getCartItems?userID=${props.userInfo.userID}`, {
+            method:'GET',
         }).then((res) => {
             if (res.status === 403) {
                 message.info("Please login first");
@@ -62,14 +57,8 @@ function CartTable(props) {
         if (props.userInfo.userID === null) {
             message.error("userID is " + props.userInfo.userID);
         } else {
-            // todo
-            fetch(`${constant.BACKEND}/sendOrder`,{
-                method: 'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(request)
+            fetch(`${constant.BACKEND}/sendOrder?userID=${props.userInfo.userID}`,{
+                method: 'GET',
             }).then((res) => {
                 if (res.status === 403) {
                     message.info("Please login first");
