@@ -44,7 +44,7 @@ function BookDetail(props) {
             return;
         }
         let request = {
-            "isbn":props.isbn,
+            "id":props.id,
             "userID":props.userInfo.userID,
             "bookAmount":values.bookAmount
         };
