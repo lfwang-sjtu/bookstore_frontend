@@ -4,7 +4,10 @@ import * as constant from "../utilities/constant";
 
 function SearchType() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState(null);
+    const [searchResults, setSearchResults] = useState([{
+        "id" : 1,
+        "name" : "mamba out"
+    }]);
 
     const handleSearch = () => {
         // 使用 fetch 发送搜索请求的基本框架
@@ -13,7 +16,8 @@ function SearchType() {
         }).then(response => response.json())
             .then(data => {
                 // 处理搜索结果
-                setSearchResults(data);
+                console.log(data);
+                setSearchResults(data.detail);
             })
             .catch(error => {
                 console.error('Error fetching search results:', error);
@@ -33,15 +37,30 @@ function SearchType() {
             {searchResults && (
                 <div>
                     <h2>Search Results</h2>
-                    <ul>
-                        {/* 遍历搜索结果并显示 */}
-                        {searchResults.map(result => (
-                            <li key={result.id}>{result.name}</li>
+                    <table border="1">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>type</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {searchResults.map((result) => (
+                            <tr key={result.id}>
+                                <td>{result.id}</td>
+                                <td>{result.name}</td>
+                                <td>{result.author}</td>
+                                <td>{result.type}</td>
+                            </tr>
                         ))}
-                    </ul>
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>
     );
 }
+
 export default SearchType;
