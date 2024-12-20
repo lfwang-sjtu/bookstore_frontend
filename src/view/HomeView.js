@@ -15,6 +15,7 @@ import SelfLookup from "../components/SelfLookup";
 import * as constant from "../utilities/constant";
 import {useNavigate} from "react-router-dom";
 import BookSearchPageList from "../components/BookSearchPageList";
+import GraphQL from "../components/GraphQL";
 
 const { Header, Sider, Content } = Layout;
 
@@ -80,6 +81,9 @@ function HomeView(props) {
     } else if (currentMenuItem === 'selfLookup') {
         content =
             <SelfLookup userInfo={props.userInfo}/>
+    } else if (currentMenuItem === 'graphql') {
+        content =
+            <GraphQL />
     }
 
     const items = [
@@ -137,6 +141,13 @@ function HomeView(props) {
                 <a>自我统计</a>
             ),
             key: 'selfLookup',
+            icon: <BookOutlined />
+        },
+        {
+            label: (
+                <a>graphql</a>
+            ),
+            key: 'graphql',
             icon: <BookOutlined />
         },
     ];
